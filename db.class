@@ -14,7 +14,7 @@ class db {
         $this->host = 'localhost'; //hostname
         $this->user = 'root'; //username
         $this->password = 'root'; //password
-        $this->dbname = 'phpcmd'; //name of your database
+        $this->dbname = 'orit'; //name of your database
         $this->port = '3306';
         $this->debug = true;
         $this->prefix = 'tbl_';

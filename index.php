@@ -3,7 +3,6 @@ include('db.class'); // call db.class.php
 $DB = new db(); // create a new object, class db()
 
 $file = $argv[1];
-//$file = 'D:\wamp64\www\phpcmd\smallFile.txt';
 $getFile = file_get_contents($file);
 $uniquevalue = explode(' ', $getFile);
 $keyword = array_unique($uniquevalue);
