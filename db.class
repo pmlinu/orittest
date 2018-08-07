@@ -1,0 +1,89 @@
+<?php
+class db {
+    private $conn;
+    private $host;
+    private $user;
+    private $password;
+    private $baseName;
+    private $port;
+    private $Debug;
+    private $prefix;
+
+    function __construct($params=array()) {
+        $this->conn = false;
+        $this->host = 'localhost'; //hostname
+        $this->user = 'root'; //username
+        $this->password = 'root'; //password
+        $this->dbname = 'phpcmd'; //name of your database
+        $this->port = '3306';
+        $this->debug = true;
+        $this->prefix = 'tbl_';
+        $this->connect();
+    }
+
+
+    function connect() {
+        if (!$this->conn) {
+            $this->conn = mysqli_connect($this->host, $this->user, $this->password);	
+            mysqli_select_db( $this->conn,$this->dbname); 
+            if (!$this->conn) {
+                    $this->status_fatal = true;
+                    echo 'Connection  failed';
+                    die();
+            } 
+            else {
+                    $this->status_fatal = false;
+
+            }
+        }
+        return $this->conn;
+    }
+    
+    function saveRecord($tblName,$field,$batch = array()){
+        $cnx = $this->conn;
+        $table = $this->prefix.$tblName;
+        $sql = "";
+        $fileds = implode(',', $field);
+        
+        foreach ($batch as $val){
+            $sql= "insert into $table ($fileds) value";
+            $sql.= "('$val');";
+            $result = $cnx->query($sql);
+        }
+        
+        //mysqli_free_result($result);
+        if ($result === TRUE) {
+            //echo "New records created successfully";
+            
+        } else {
+            echo "Error: " . $sql . "<br>" . $cnx->error;
+        }
+        
+    }
+    
+    function getWordscount($tblName){
+        $cnx = $this->conn;
+        $table = $this->prefix.$tblName;
+        $sql = "select count(*) as count from $table" ;
+        $result = mysqli_query($cnx,$sql);
+        $row = $result->fetch_assoc();
+        $row_cnt = $row['count'];
+        return $row_cnt;
+    }
+    
+    function getWords($tblName){
+        $cnx = $this->conn;
+        $table = $this->prefix.$tblName;
+        $sql = "select keyword from $table" ;
+        $result = mysqli_query($cnx,$sql);
+        $count = mysqli_num_rows($result);
+        $keywords = "";
+        if(count($count)>0){
+            while($row=mysqli_fetch_array($result)){
+                $keywords.= $row['keyword']."<br>";
+            }
+        }
+        return  $keywords;
+    }
+        
+}
